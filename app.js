@@ -6,11 +6,11 @@ const server = http.createServer(app);
 const io = require("socket.io")(server);
 
 // MQTT Client setup
-const mqttClient = mqtt.connect("mqtt://test.mosquitto.org"); // Use your MQTT broker URL here
+const mqttClient = mqtt.connect("mqtt://185.183.182.195"); // Use your MQTT broker URL here
 
 mqttClient.on("connect", () => {
   console.log("MQTT Client connected");
-  mqttClient.subscribe("devices/esp01/get/sensor_data"); // Subscribe to the desired MQTT topic
+  mqttClient.subscribe("topic_1"); // Subscribe to the desired MQTT topic
 });
 
 mqttClient.on("message", (topic, message) => {
