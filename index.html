@@ -9,16 +9,44 @@
   <h1>MQTT Messages</h1>
   <ul id="messages"></ul>
 
+  <button onclick="downloadMessages()">Store Data in Drive</button>
+
   <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
   <script>
     const socket = io();
+    let receivedMessages = [];
 
     socket.on('mqttMessage', function (data) {
       const messages = document.getElementById('messages');
       const listItem = document.createElement('li');
       listItem.textContent = `Topic: ${data.topic}, Message: ${data.message}`;
       messages.appendChild(listItem);
+
+      // Store the received message
+      receivedMessages.push(data);
     });
+
+    function downloadMessages() {
+      // Convert receivedMessages to CSV format
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Topic,Message\n"; // Add header row
+      receivedMessages.forEach(function(row) {
+        csvContent += `${row.topic},${row.message}\n`; // Add each message as a row
+      });
+
+      // Create a data URI for the CSV data
+      const dataUri = encodeURI(csvContent);
+      
+      // Create a temporary anchor element
+      const a = document.createElement('a');
+      a.href = dataUri;
+      a.download = 'mqtt_messages.csv'; // Specify the file name
+      // Append the anchor to the body and trigger the download
+      document.body.appendChild(a);
+      a.click();
+      // Remove the anchor from the body
+      document.body.removeChild(a);
+    }
   </script>
 </body>
 </html>
